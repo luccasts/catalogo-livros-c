@@ -83,13 +83,7 @@ Livro *bst_menor(Livro *raiz) {
         raiz = raiz->esq;
     return raiz;
 }
-int bst_contagem(Livro * raiz){
-	if(raiz == NULL){
-		return 0;
-	}
-	
-	return 1 + bst_contagem(raiz->esq) + bst_contagem(raiz->dir);
-}
+
 /*
  * Remove um livro da BST.
  * Três situações:
