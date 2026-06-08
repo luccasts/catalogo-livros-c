@@ -111,15 +111,15 @@ O histórico é salvo em ordem inversa à da pilha (do mais antigo ao mais novo)
 ### Linux / macOS
 
 ```bash
-gcc -std=c11 -Wall -o catalogo main.c
-./catalogo
+gcc -std=c11 -Wall -o catalogo-livros main.c
+./catalogo-livros
 ```
 
 ### Windows (MinGW)
 
 ```bash
-gcc -std=c11 -Wall -o catalogo.exe main.c
-catalogo.exe
+gcc -std=c11 -Wall -o catalogo-livros.exe main.c
+catalogo-livros.exe
 ```
 
 ---
