@@ -19,7 +19,7 @@
    ESTRUTURAS DE DADOS
    ================================================ */
 
-/* Nó da Árvore Binária de Busca (BST) */
+/* NÃ³ da Ãrvore BinÃ¡ria de Busca (BST) */
 
 typedef struct Livro {
     char titulo[100];
@@ -28,17 +28,17 @@ typedef struct Livro {
     struct Livro *dir;   /* filho maior (alfabeticamente) */
 } Livro;
 
-/* Nó da Pilha — para o histórico de buscas */
+/* NÃ³ da Pilha â€” para o histÃ³rico de buscas */
 typedef struct Historico {
     char titulo[100];
     struct Historico *prox;
 } Historico;
 
 /* ================================================
-   FUNÇÕES DA BST
+   FUNÃ‡Ã•ES DA BST
    ================================================ */
 
-/* Cria e retorna um novo nó com título e autor */
+/* Cria e retorna um novo nÃ³ com tÃ­tulo e autor */
 Livro *bst_novo(const char *titulo, const char *autor) {
     Livro *l = malloc(sizeof(Livro));
     if (l == NULL) { printf("Erro: memoria insuficiente.\n"); exit(1); }
@@ -49,7 +49,7 @@ Livro *bst_novo(const char *titulo, const char *autor) {
     return l;
 }
 
-/* Insere um livro na BST em ordem alfabética pelo título */
+/* Insere um livro na BST em ordem alfabÃ©tica pelo tÃ­tulo */
 Livro *bst_inserir(Livro *raiz, const char *titulo, const char *autor) {
     if (raiz == NULL)
         return bst_novo(titulo, autor);
@@ -61,12 +61,12 @@ Livro *bst_inserir(Livro *raiz, const char *titulo, const char *autor) {
     else if (cmp > 0)
         raiz->dir = bst_inserir(raiz->dir, titulo, autor);
     else
-        printf("Livro \"%s\" já cadastrado.\n", titulo);
+        printf("Livro \"%s\" jÃ¡ cadastrado.\n", titulo);
 
     return raiz;
 }
 
-/* Busca um livro pelo título; retorna o nó ou NULL */
+/* Busca um livro pelo tÃ­tulo; retorna o nÃ³ ou NULL */
 Livro *bst_buscar(Livro *raiz, const char *titulo) {
     if (raiz == NULL)
         return NULL;
@@ -78,7 +78,7 @@ Livro *bst_buscar(Livro *raiz, const char *titulo) {
     return bst_buscar(raiz->dir, titulo);
 }
 
-/* Retorna o nó com o menor título dentro de uma subárvore */
+/* Retorna o nÃ³ com o menor tÃ­tulo dentro de uma subÃ¡rvore */
 Livro *bst_menor(Livro *raiz) {
     while (raiz->esq != NULL)
         raiz = raiz->esq;
@@ -87,14 +87,14 @@ Livro *bst_menor(Livro *raiz) {
 
 /*
  * Remove um livro da BST.
- * Três situações:
- *   1. Nó sem filhos   ? simplesmente apaga
- *   2. Nó com 1 filho  ? o filho sobe no lugar
- *   3. Nó com 2 filhos ? substitui pelo sucessor (menor da direita)
+ * TrÃªs situaÃ§Ãµes:
+ *   1. NÃ³ sem filhos   ? simplesmente apaga
+ *   2. NÃ³ com 1 filho  ? o filho sobe no lugar
+ *   3. NÃ³ com 2 filhos ? substitui pelo sucessor (menor da direita)
  */
 Livro *bst_remover(Livro *raiz, const char *titulo) {
     if (raiz == NULL) {
-        printf(COR_VERMELHA "Erro: Livro \"%s\" não encontrado para remoção.\n" COR_RESET, titulo);
+        printf(COR_VERMELHA "Erro: Livro \"%s\" nÃ£o encontrado para remoÃ§Ã£o.\n" COR_RESET, titulo);
         return NULL;
     }
 
@@ -109,7 +109,7 @@ Livro *bst_remover(Livro *raiz, const char *titulo) {
         if (raiz->esq == NULL) { Livro *t = raiz->dir; free(raiz); return t; }
         if (raiz->dir == NULL) { Livro *t = raiz->esq; free(raiz); return t; }
 
-        /* Caso 3: dois filhos — copia o sucessor e o remove */
+        /* Caso 3: dois filhos â€” copia o sucessor e o remove */
         Livro *suc = bst_menor(raiz->dir);
         strcpy(raiz->titulo, suc->titulo);
         strcpy(raiz->autor,  suc->autor);
@@ -118,7 +118,7 @@ Livro *bst_remover(Livro *raiz, const char *titulo) {
     return raiz;
 }
 
-/* Lista todos os livros em ordem alfabética (in-order) */
+/* Lista todos os livros em ordem alfabÃ©tica (in-order) */
 void bst_listar(Livro *raiz, int *n) {
     if (raiz == NULL) return;
     bst_listar(raiz->esq, n);
@@ -127,10 +127,10 @@ void bst_listar(Livro *raiz, int *n) {
 }
 
 /* ================================================
-   FUNÇÕES DA PILHA (histórico)
+   FUNÃ‡Ã•ES DA PILHA (histÃ³rico)
    ================================================ */
 
-/* Empilha um título buscado */
+/* Empilha um tÃ­tulo buscado */
 void pilha_push(Historico **topo, const char *titulo) {
     Historico *novo = malloc(sizeof(Historico));
     if (novo == NULL) { printf("Erro: memoria insuficiente.\n"); exit(1); }
@@ -139,7 +139,7 @@ void pilha_push(Historico **topo, const char *titulo) {
     *topo = novo;
 }
 
-/* Exibe o histórico do mais recente para o mais antigo */
+/* Exibe o histÃ³rico do mais recente para o mais antigo */
 void pilha_listar(Historico *topo) {
     if (topo == NULL) {
         printf("  Historico vazio.\n");
@@ -153,7 +153,7 @@ void pilha_listar(Historico *topo) {
 }
 
 /* ================================================
-   PERSISTÊNCIA (salvar / carregar em arquivos)
+   PERSISTÃŠNCIA (salvar / carregar em arquivos)
    ================================================ */
 
 void salvar_livros(Livro *raiz, FILE *fp) {
@@ -200,7 +200,7 @@ void carregar_historico(Historico **topo) {
 }
 
 /* ================================================
-   UTILITÁRIOS
+   UTILITÃRIOS
    ================================================ */
 
 void ler_string(const char *prompt, char *buf, int tam) {
@@ -225,7 +225,7 @@ void pilha_liberar(Historico *topo) {
 }
 void limpar_buffer() {
     int c;
-    /* "Enquanto o que for lido não for o Enter (\n) nem o fim do arquivo (EOF), continue jogando no lixo" */
+    /* "Enquanto o que for lido nÃ£o for o Enter (\n) nem o fim do arquivo (EOF), continue jogando no lixo" */
     while ((c = getchar()) != '\n' && c != EOF); 
 }
 
@@ -252,7 +252,7 @@ int main(void) {
     do {
         system(CLEAR);
         printf(COR_CIANO "====================================\n" COR_RESET);
-        printf(COR_AMARELA "       CATÁLOGO DE LIVROS\n" COR_RESET);
+        printf(COR_AMARELA "       CATÃLOGO DE LIVROS\n" COR_RESET);
         printf(COR_CIANO "====================================\n\n" COR_RESET);
         printf("  [ 1 ] Cadastrar novo livro\n");
         printf("  [ 2 ] Buscar livro pelo titulo\n");
@@ -284,7 +284,7 @@ int main(void) {
             Livro *l = bst_buscar(raiz, titulo);
             if (l != NULL) {
             	printf(COR_VERDE "\n=====================\n ENCONTRADO \n=====================\n" COR_RESET);
-                printf("Título: %s\nAutor: %s\n", l->titulo, l->autor);
+                printf("TÃ­tulo: %s\nAutor: %s\n", l->titulo, l->autor);
                 pilha_push(&topo, titulo);
             } else {
                 printf(COR_VERMELHA "\nLivro \"%s\" nao encontrado.\n" COR_RESET, titulo);
