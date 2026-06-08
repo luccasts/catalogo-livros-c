@@ -13,7 +13,6 @@
 #define COR_RESET  "\033[0m"
 #define COR_VERDE  "\033[32m"
 #define COR_VERMELHA "\033[31m"
-#define COR_CIANO  "\033[36m"
 #define COR_AMARELA "\033[33m"
 /* ================================================
    ESTRUTURAS DE DADOS
@@ -84,7 +83,13 @@ Livro *bst_menor(Livro *raiz) {
         raiz = raiz->esq;
     return raiz;
 }
-
+int bst_contagem(Livro * raiz){
+	if(raiz == NULL){
+		return 0;
+	}
+	
+	return 1 + bst_contagem(raiz->esq) + bst_contagem(raiz->dir);
+}
 /*
  * Remove um livro da BST.
  * Três situações:
@@ -122,7 +127,7 @@ Livro *bst_remover(Livro *raiz, const char *titulo) {
 void bst_listar(Livro *raiz, int *n) {
     if (raiz == NULL) return;
     bst_listar(raiz->esq, n);
-    printf("  [%d] %s - %s\n", ++(*n), raiz->titulo, raiz->autor);
+    printf("  [%d] %s \n   Autor(a): %s\n", ++(*n), raiz->titulo, raiz->autor);
     bst_listar(raiz->dir, n);
 }
 
@@ -173,9 +178,15 @@ void carregar_livros(Livro **raiz) {
         char *sep = strchr(linha, ';');
         if (sep == NULL) continue;
         *sep = '\0';
-        strcpy(titulo, linha);
-        strcpy(autor,  sep + 1);
-        *raiz = bst_inserir(*raiz, titulo, autor);
+        strncpy(titulo, linha, sizeof(titulo) - 1);
+		titulo[sizeof(titulo) - 1] = '\0';
+		
+		strncpy(autor, sep + 1, sizeof(autor) - 1);
+		autor[sizeof(autor) - 1] = '\0';
+		
+		if (strlen(titulo) > 0 && strlen(autor) > 0) {
+		    *raiz = bst_inserir(*raiz, titulo, autor);
+		}
     }
     fclose(fp);
 }
@@ -207,6 +218,13 @@ void ler_string(const char *prompt, char *buf, int tam) {
     printf("%s", prompt);
     fgets(buf, tam, stdin);
     buf[strcspn(buf, "\n")] = '\0';
+	
+	int i;
+	for(i = 0; buf[i] != '\0'; i++) {
+	    if(buf[i] == ';') {
+	        buf[i] = ' ';
+	    }
+	}
 }
 
 void bst_liberar(Livro *raiz) {
@@ -251,9 +269,9 @@ int main(void) {
 
     do {
         system(CLEAR);
-        printf(COR_CIANO "====================================\n" COR_RESET);
+        printf("====================================\n");
         printf(COR_AMARELA "       CATÁLOGO DE LIVROS\n" COR_RESET);
-        printf(COR_CIANO "====================================\n\n" COR_RESET);
+        printf("====================================\n\n");
         printf("  [ 1 ] Cadastrar novo livro\n");
         printf("  [ 2 ] Buscar livro pelo titulo\n");
         printf("  [ 3 ] Remover livro\n");
@@ -270,7 +288,7 @@ int main(void) {
         switch (opcao) {
 
         case 1:
-            printf(COR_AMARELA "========= CADASTRAR LIVRO ---\n\n" COR_RESET);
+            printf(COR_AMARELA "\n====================================\n        CADASTRAR LIVRO \n====================================\n\n" COR_RESET);
             ler_string("Titulo: ", titulo, sizeof(titulo));
             ler_string("Autor : ", autor,  sizeof(autor));
             raiz = bst_inserir(raiz, titulo, autor);
@@ -279,11 +297,11 @@ int main(void) {
             break;
 
         case 2: {
-            printf(COR_AMARELA "--- BUSCAR LIVRO ---\n\n" COR_RESET);
+            printf(COR_AMARELA "\n====================================\n        BUSCAR LIVRO \n====================================\n\n" COR_RESET);
             ler_string("Titulo: ", titulo, sizeof(titulo));
             Livro *l = bst_buscar(raiz, titulo);
             if (l != NULL) {
-            	printf(COR_VERDE "\n=====================\n ENCONTRADO \n=====================\n" COR_RESET);
+            	printf(COR_VERDE "\n====================================\n        ENCONTRADO \n====================================\n\n" COR_RESET);
                 printf("Título: %s\nAutor: %s\n", l->titulo, l->autor);
                 pilha_push(&topo, titulo);
             } else {
@@ -294,7 +312,7 @@ int main(void) {
         }
 
         case 3:
-            printf(COR_AMARELA "--- REMOVER LIVRO ---\n\n" COR_RESET);
+            printf(COR_AMARELA "\n====================================\n        REMOVER LIVRO \n====================================\n\n" COR_RESET);
             ler_string("Titulo: ", titulo, sizeof(titulo));
             Livro *antes = bst_buscar(raiz, titulo);
             if (antes != NULL) {
@@ -306,7 +324,7 @@ int main(void) {
 
         case 4: {
             int n = 0;
-            printf(COR_AMARELA "--- TODOS OS LIVROS (Ordem Alfabetica) ---\n\n" COR_RESET);
+            printf(COR_AMARELA "\n===============================================================\n             TODOS OS LIVROS (Ordem Alfabetica) \n===============================================================\n\n" COR_RESET);
             bst_listar(raiz, &n);
             if (n == 0) printf(COR_VERMELHA "  Nenhum livro cadastrado.\n" COR_RESET);
             pausar();
@@ -314,7 +332,7 @@ int main(void) {
         }
 
         case 5:
-            printf(COR_AMARELA "--- HISTORICO DE BUSCAS ---\n\n" COR_RESET);
+            printf(COR_AMARELA "\n====================================\n HISTORICO DE BUSCAS \n====================================\n\n" COR_RESET);
             pilha_listar(topo);
             pausar();
             break;
@@ -324,7 +342,7 @@ int main(void) {
             break;
 
         default:
-            printf(COR_VERMELHA "Opcao invalida. Tente novamente.\n" COR_RESET);
+            printf(COR_VERMELHA "Opcao inválida. Tente novamente.\n" COR_RESET);
             pausar();
         }
 
